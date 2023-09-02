@@ -1,4 +1,5 @@
-import { checkRedis, checkDB } from '../utils'; // Import your utility functions
+import { checkRedis } from '../utils/redis'; // Import your Redis utility
+import { checkDB } from '../utils/db'; // Import your DB utility
 
 const AppController = {
   getStatus: async (req, res) => {
