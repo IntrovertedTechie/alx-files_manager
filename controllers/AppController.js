@@ -1,4 +1,4 @@
-const { checkRedis, checkDB } = require('../utils'); // Import your utility functions
+import { checkRedis, checkDB } from '../utils'; // Import your utility functions
 
 const AppController = {
   getStatus: async (req, res) => {
@@ -29,4 +29,4 @@ const AppController = {
   }
 };
 
-module.exports = AppController;
+export default AppController;
