@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import * as AppController from '../controllers/AppController';
+import { getStatus, getStats } from '../controllers/AppController'; // Import specific functions
 
-router.get('/status', AppController.getStatus);
-router.get('/stats', AppController.getStats);
+router.get('/status', getStatus); // Use the imported functions directly
+router.get('/stats', getStats);
 
 export default router;
