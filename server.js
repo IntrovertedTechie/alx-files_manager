@@ -4,7 +4,6 @@ const PORT = process.env.PORT || 5000;
 
 // Import your routes module
 const routes = require('./routes');
-
 // Use the routes middleware
 app.use('/', routes);
 
