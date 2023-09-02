@@ -1,4 +1,5 @@
-import { MongoClient } from 'mongodb';
+
+ { MongoClient } from 'mongodb';
 
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 27017;
@@ -52,4 +53,6 @@ class DBClient {
 
 const dbClient = new DBClient();
 
+
 export default dbClient;
+>>>>>>> 84fb03b35e531f477be4e2c9cfd051b96a9dab59
