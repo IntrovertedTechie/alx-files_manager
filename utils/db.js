@@ -1,13 +1,3 @@
-import { MongoClient } from 'mongodb';
-
-const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_PORT = process.env.DB_PORT || 27017;
-const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
-const url = `mongodb://${DB_HOST}:${DB_PORT}`;
-
-/**
- * Class for performing operations with Mongo service
- */
 class DBClient {
   constructor() {
     MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
@@ -25,7 +15,7 @@ class DBClient {
 
   /**
    * Checks if connection to Redis is Alive
-   * @return {boolean} true if connection alive or false if not
+   * @return {boolean} true if connection is alive or false if not
    */
   isAlive() {
     return Boolean(this.db);
@@ -33,23 +23,19 @@ class DBClient {
 
   /**
    * Returns the number of documents in the collection users
-   * @return {number} amount of users
+   * @return {Promise<number>} Promise that resolves to the number of users
    */
   async nbUsers() {
-    const numberOfUsers = this.usersCollection.countDocuments();
+    const numberOfUsers = await this.usersCollection.countDocuments();
     return numberOfUsers;
   }
 
   /**
    * Returns the number of documents in the collection files
-   * @return {number} amount of files
+   * @return {Promise<number>} Promise that resolves to the number of files
    */
   async nbFiles() {
-    const numberOfFiles = this.filesCollection.countDocuments();
+    const numberOfFiles = await this.filesCollection.countDocuments();
     return numberOfFiles;
   }
 }
-
-const dbClient = new DBClient();
-
-export default dbClient;
