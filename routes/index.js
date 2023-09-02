@@ -1,18 +1,28 @@
 const express = require('express');
 const AppController = require('../controllers/AppController');
 
-function controllerRouting(app) {
-  const router = express.Router();
-  app.use(express.json());
-  app.use('/', router);
+const app = express();
 
-  router.get('/status', (req, res) => {
-    AppController.getStatus(req, res);
-  });
+// Define a common middleware function that will be executed for all routes
+app.all('*', (req, res, next) => {
+  // Perform common operations or checks here
+  // For example, you can add authentication logic here
+  
+  // Continue to the next middleware or route handler
+  next();
+});
 
-  router.get('/stats', (req, res) => {
-    AppController.getStats(req, res);
-  });
-}
+// Define your routes
+app.get('/status', (req, res) => {
+  AppController.getStatus(req, res);
+});
 
-module.exports = controllerRouting;
+app.get('/stats', (req, res) => {
+  AppController.getStats(req, res);
+});
+
+// Start the Express server
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Express Server app running on http://localhost:${port}/`);
+});
