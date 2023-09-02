@@ -1,12 +1,12 @@
 const express = require('express');
+const controllerRouting = require('./routes/index');
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
-// Import your routes module
-const routes = require('./routes/index');
-// Use the routes middleware
-app.all('/', routes)
+controllerRouting(app);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Express Server app running on http://localhost:${port}/`);
 });
+module.exports = app;
