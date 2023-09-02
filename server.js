@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Load routes from routes/index.js
+// Import your routes module
 const routes = require('./routes');
+
+// Use the routes middleware
 app.use('/', routes);
 
 app.listen(PORT, () => {
