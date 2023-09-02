@@ -1,19 +1,24 @@
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+const { checkRedis, checkDatabase } = require('../utils'); // Import your utility functions
 
 class AppController {
-  static getStatus(request, response) {
-    return response.status(200).send(
-      `{"redis": ${redisClient.isAlive()}, "db": ${dbClient.isAlive()}}`,
-    );
+  static getStatus(req, res) {
+    // Check Redis and Database status using your utility functions
+    const redisStatus = checkRedis();
+    const dbStatus = checkDatabase();
+
+    if (redisStatus && dbStatus) {
+      res.status(200).json({ "redis": true, "db": true });
+    } else {
+      res.status(500).json({ "redis": false, "db": false });
+    }
   }
 
-  static async getStats(request, response) {
-    const nbusers = await dbClient.nbUsers();
-    const nbfiles = await dbClient.nbFiles();
-    return response.status(200).send(
-      `{"users": ${nbusers}, "files": ${nbfiles}}`,
-    );
+  static getStats(req, res) {
+    // You should count the number of users and files using your collections here
+    const usersCount = /* Count users from your collection */;
+    const filesCount = /* Count files from your collection */;
+
+    res.status(200).json({ "users": usersCount, "files": filesCount });
   }
 }
 
