@@ -3,7 +3,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Import your routes module
-const routes = require('./routes');
+const routes = require('./routes/index');
 // Use the routes middleware
 app.get('/', routes)
 
