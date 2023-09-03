@@ -1,5 +1,7 @@
 import dbClient from '../utils/db';
 import sha1 from 'sha1';
+import redisClient from '../utils/redis'; // Import the Redis client
+import { v4 as uuidv4 } from 'uuid'; // Import uuidv4 for generating tokens
 
 class UsersController {
   /**
@@ -40,7 +42,11 @@ class UsersController {
     // Return the new user with only email and id
     return response.status(201).json({ id: result.id, email: result.email });
   }
+
+  // Add the getMe endpoint as described in the previous response
+  static async getMe(request, response) {
+    // ...
+  }
 }
 
 export default UsersController;
-
