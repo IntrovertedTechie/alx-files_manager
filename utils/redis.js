@@ -7,7 +7,7 @@ class RedisClient {
     this.redisClient.on('error', (error) => {
       console.log(`Connection to redis failed: ${error}`);
     }).on('connect', () => {
-      console.log('Connected to redis server');
+      console.log();
     });
   }
 
