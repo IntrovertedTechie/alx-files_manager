@@ -1,18 +1,9 @@
-const express = require('express');
-const AppController = require('../controllers/AppController');
+import { Router } from 'express';
+import AppController from '../controllers/AppController';
 
-function controllerRouting(app) {
-  const router = express.Router();
-  app.use(express.json());
-  app.use('/', router);
+const router = Router();
 
-  router.get('/status', (req, res) => {
-    AppController.getStatus(req, res);
-  });
+router.get('/status', AppController.getStatus);
+router.get('/stats', AppController.getStats);
 
-  router.get('/stats', (req, res) => {
-    AppController.getStats(req, res);
-  });
-}
-
-module.exports = controllerRouting;
+export default router
