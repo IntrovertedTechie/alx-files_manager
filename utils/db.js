@@ -24,29 +24,44 @@ class DBClient {
   }
 
   /**
-   * Checks if connection to Redis is Alive
-   * @return {boolean} true if connection alive or false if not
+   * Checks if connection to MongoDB is alive.
+   * @return {boolean} true if connection is alive, or false if not.
    */
   isAlive() {
     return Boolean(this.db);
   }
 
   /**
-   * Returns the number of documents in the collection users
-   * @return {number} amount of users
+   * Returns the number of documents in the collection users.
+   * @return {Promise<number>} Number of users.
    */
   async nbUsers() {
-    const numberOfUsers = this.usersCollection.countDocuments();
+    const numberOfUsers = await this.usersCollection.countDocuments();
     return numberOfUsers;
   }
 
   /**
-   * Returns the number of documents in the collection files
-   * @return {number} amount of files
+   * Returns the number of documents in the collection files.
+   * @return {Promise<number>} Number of files.
    */
   async nbFiles() {
-    const numberOfFiles = this.filesCollection.countDocuments();
+    const numberOfFiles = await this.filesCollection.countDocuments();
     return numberOfFiles;
+  }
+
+  /**
+   * Retrieves a user by their email address.
+   * @param {string} email - The email address of the user to retrieve.
+   * @returns {Promise<object|null>} A promise that resolves with the user object or null if not found.
+   */
+  async getUserByEmail(email) {
+    try {
+      const user = await this.usersCollection.findOne({ email });
+      return user;
+    } catch (error) {
+      console.error('Error retrieving user by email:', error);
+      throw error; // Rethrow the error to be handled where this function is called.
+    }
   }
 }
 
