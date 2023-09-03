@@ -10,7 +10,7 @@ class DBClient {
     this.db = null;
     this.usersCollection = null;
     this.filesCollection = null;
-    
+
     MongoClient.connect(url, { useUnifiedTopology: true })
       .then((client) => {
         this.db = client.db(DB_DATABASE);
@@ -23,7 +23,7 @@ class DBClient {
       });
   }
 
-  async isAlive() {
+  isAlive() {
     return Boolean(this.db);
   }
 
