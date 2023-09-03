@@ -1,62 +1,58 @@
-import redis from 'redis';
+import { createClient } from 'redis';
 import { promisify } from 'util';
 
-/**
- * Class for performing operations with Redis service
- */
 class RedisClient {
   constructor() {
-    this.client = redis.createClient();
-    this.getAsync = promisify(this.client.get).bind(this.client);
-
-    this.client.on('error', (error) => {
-      console.log(`Redis client not connected to the server: ${error.message}`);
-    });
-
-    this.client.on('connect', () => {
-      // console.log('Redis client connected to the server');
+    this.redisClient = createClient();
+    this.redisClient.on('error', (error) => {
+      console.log(`Connection to redis failed: ${error}`);
+    }).on('connect', () => {
+      console.log('Connected to redis server');
     });
   }
 
   /**
-   * Checks if connection to Redis is Alive
-   * @return {boolean} true if connection alive or false if not
+   * returns a boolean depending on the connection result
+   * @returns true on successful connection, otherwise false
    */
   isAlive() {
-    return this.client.connected;
+    if (this.redisClient.connected) {
+      return true;
+    }
+    return false;
   }
 
   /**
-   * gets value corresponding to key in redis
-   * @key {string} key to search for in redis
-   * @return {string}  value of key
+   * gets the value of a key from the redis storage
+   * @param {keyString} keyString key of value to get from redis
+   * @returns value from redis
    */
-  async get(key) {
-    const value = await this.getAsync(key);
+  async get(keyString) {
+    const promiseGet = promisify(this.redisClient.get).bind(this.redisClient);
+    const value = await promiseGet(keyString);
     return value;
   }
 
   /**
-   * Creates a new key in redis with a specific TTL
-   * @key {string} key to be saved in redis
-   * @value {string} value to be asigned to key
-   * @duration {number} TTL of key
-   * @return {undefined}  No return
+   * sets a key and value with expiry time in redis
+   * @param {key} key key
+   * @param {value} value value of key
+   * @param {duration} duration expiration period (in seconds)
    */
   async set(key, value, duration) {
-    this.client.setex(key, duration, value);
+    const promiseSet = promisify(this.redisClient.set).bind(this.redisClient);
+    await promiseSet(key, value, 'EX', duration.toString());
   }
 
   /**
-   * Deletes key in redis service
-   * @key {string} key to be deleted
-   * @return {undefined}  No return
+   * deletes a key from redis
+   * @param {keyString} keyString key to delete
    */
-  async del(key) {
-    this.client.del(key);
+  async del(keyString) {
+    const promiseDel = promisify(this.redisClient.del).bind(this.redisClient);
+    await promiseDel(keyString);
   }
 }
 
 const redisClient = new RedisClient();
-
 export default redisClient;
