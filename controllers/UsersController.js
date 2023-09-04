@@ -1,46 +1,36 @@
+/* eslint-disable import/no-named-as-default */
 import sha1 from 'sha1';
 import dbClient from '../utils/db';
 
-
 export default class UsersController {
-  static async postNew(request, response) {
-    // Get the email and password from the request body
-    const { email, password } = request.body;
+  static async postNew(req, res) {
+    const email = req.body ? req.body.email : null;
+    const password = req.body ? req.body.password : null;
 
-    // Check if email and password are provided
     if (!email) {
-      return response.status(400).json({ error: 'Missing email' });
+      res.status(400).json({ error: 'Missing email' });
+      return;
     }
     if (!password) {
-      return response.status(400).json({ error: 'Missing password' });
+      res.status(400).json({ error: 'Missing password' });
+      return;
     }
+    const user = await (await dbClient.usersCollection()).findOne({ email });
 
-    // Check if the email already exists in the database
-    const userExists = await dbClient.getUserByEmail(email);
-    if (userExists) {
-      return response.status(400).json({ error: 'Already exist' });
+    if (user) {
+      res.status(400).json({ error: 'Already exist' });
+      return;
     }
+    const insertionInfo = await (await dbClient.usersCollection())
+      .insertOne({ email, password: sha1(password) });
+    const userId = insertionInfo.insertedId.toString();
 
-    // Hash the password using SHA1
-    const hashedPassword = sha1(password);
-
-    // Create the new user object
-    const newUser = {
-      email,
-      password: hashedPassword,
-    };
-
-    try {
-      // Insert the new user into the database
-      const result = await dbClient.createUser(newUser);
-
-      // Return the new user with only email and id
-      return response.status(201).json({ id: result.id, email: result.email });
-    } catch (error) {
-      // Handle any database insertion errors here
-      return response.status(500).json({ error: 'Internal Server Error' });
-    }
+    res.status(201).json({ email, id: userId });
   }
 
-  // Implement other methods as needed, e.g., getMe
+  static async getMe(req, res) {
+    const { user } = req;
+
+    res.status(200).json({ email: user.email, id: user._id.toString() });
+  }
 }
