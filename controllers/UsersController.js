@@ -1,14 +1,7 @@
 import dbClient from '../utils/db';
 import sha1 from 'sha1';
-import redisClient from '../utils/redis'; // Import the Redis client
-import { v4 as uuidv4 } from 'uuid'; // Import uuidv4 for generating tokens
 
-class UsersController {
-  /**
-   * Create a new user in the database
-   * @param {*} request request object
-   * @param {*} response response object
-   */
+export default class UsersController {
   static async postNew(request, response) {
     // Get the email and password from the request body
     const { email, password } = request.body;
@@ -36,17 +29,17 @@ class UsersController {
       password: hashedPassword,
     };
 
-    // Insert the new user into the database
-    const result = await dbClient.createUser(newUser);
+    try {
+      // Insert the new user into the database
+      const result = await dbClient.createUser(newUser);
 
-    // Return the new user with only email and id
-    return response.status(201).json({ id: result.id, email: result.email });
+      // Return the new user with only email and id
+      return response.status(201).json({ id: result.id, email: result.email });
+    } catch (error) {
+      // Handle any database insertion errors here
+      return response.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 
-  // Add the getMe endpoint as described in the previous response
-  static async getMe(request, response) {
-    // ...
-  }
+  // Implement other methods as needed, e.g., getMe
 }
-
-export default UsersController;
