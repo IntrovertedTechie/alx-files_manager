@@ -11,12 +11,12 @@ class DBClient {
     MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
       if (error) throw error;
       this.dbName = client.db(database);
-      
+
       // Check if the database exists, and create it if missing
       this.dbName.listCollections().toArray((err, collections) => {
         if (err) throw err;
-        const dbExists = collections.some(collection => collection.name === 'users' || collection.name === 'files');
-        
+        const dbExists = collections.some((collection) => collection.name === 'users' || collection.name === 'files');
+
         if (!dbExists) {
           // Create the necessary collections (users and files)
           this.dbName.createCollection('users');
