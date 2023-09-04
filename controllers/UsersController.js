@@ -1,5 +1,6 @@
-import dbClient from '../utils/db';
 import sha1 from 'sha1';
+import dbClient from '../utils/db';
+
 
 export default class UsersController {
   static async postNew(request, response) {
