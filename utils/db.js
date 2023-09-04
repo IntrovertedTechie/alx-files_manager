@@ -1,39 +1,41 @@
-import { MongoClient } from 'mongodb';
-
-// Set up URL and database name
-const host = process.env.DB_HOST || 'localhost';
-const port = process.env.DB_PORT || '27017';
-const url = `mongodb://${host}:${port}`;
-const dbName = process.env.DB_DATABASE || 'files_manager';
+// Import necessary MongoDB packages
+const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
-    this.client = new MongoClient(url, { useUnifiedTopology: true });
+    // MongoDB connection settings
+    this.host = process.env.DB_HOST || 'localhost';
+    this.port = process.env.DB_PORT || 27017;
+    this.database = process.env.DB_DATABASE || 'files_manager';
 
-    this.client.connect(async (err) => {
-      if (err) {
-        console.error(`MongoDB connection error: ${err}`);
-      } else {
-        console.log('Connected to mongodb server');
-        // Create the 'files_manager' database if it doesn't exist
-        await this.createDatabase(dbName);
-        this.db = this.client.db(dbName);
-      }
-    });
+    // MongoDB connection URL
+    this.url = `mongodb://${this.host}:${this.port}/${this.database}`;
+
+    // Initialize MongoDB client
+    this.client = new MongoClient(this.url, { useUnifiedTopology: true });
   }
 
-  // Helper function to create the database if it doesn't exist
-  async createDatabase(databaseName) {
-    const adminDb = this.client.db('admin');
-    const databasesList = await adminDb.admin().listDatabases();
-
-    if (!databasesList.databases.find(db => db.name === databaseName)) {
-      await adminDb.admin().createDatabase(databaseName);
+  async isAlive() {
+    try {
+      // Check if the MongoDB client is connected
+      await this.client.connect();
+      return true;
+    } catch (error) {
+      return false;
+    } finally {
+      this.client.close();
     }
   }
 
-  // ... (rest of the methods are similar)
+  async nbUsers() {
+    // Implement code to count documents in the 'users' collection
+  }
+
+  async nbFiles() {
+    // Implement code to count documents in the 'files' collection
+  }
 }
 
+// Create and export an instance of DBClient
 const dbClient = new DBClient();
-export default dbClient;
+module.exports = dbClient;
