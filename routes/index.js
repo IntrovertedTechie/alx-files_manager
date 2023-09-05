@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import UsersController from '../controllers/UsersController';
+import AppController from '../controllers/AppController'; // Import AppController
+import UsersController from '../controllers/UsersController'; // Import UsersController
 import AuthController from '../controllers/AuthController'; // Import AuthController
 
 const router = Router();
@@ -12,6 +13,6 @@ router.post('/users', UsersController.postNew);
 // Add the new endpoints
 router.get('/connect', AuthController.getConnect);
 router.get('/disconnect', AuthController.getDisconnect);
-router.get('/users/me', UsersController.getMe); // This route is in UsersController, not AuthController
+router.get('/users/me', UsersController.getMe);
 
 export default router;
