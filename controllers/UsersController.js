@@ -30,6 +30,11 @@ export default class UsersController {
   static async getMe(req, res) {
     const { user } = req;
 
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Return the user's email and ID
     res.status(200).json({ email: user.email, id: user._id.toString() });
   }
 }
