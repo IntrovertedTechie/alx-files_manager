@@ -1,4 +1,5 @@
-import { Router } from 'express';
+
+ { Router } from 'express';
 import AppController from '../controllers/AppController';
 import UsersController from '../controllers/UsersController';
 import AuthController from '../controllers/AuthController'; // Import the AuthController
@@ -10,8 +11,8 @@ router.get('/stats', AppController.getStats);
 
 // Add new authentication and user-related endpoints
 router.post('/users', UsersController.postNew);
+router.get('/users/me', UsersController.getMe);
 router.get('/connect', AuthController.getConnect);
 router.get('/disconnect', AuthController.getDisconnect);
-router.get('/users/me', UsersController.getMe);
 
 export default router;
