@@ -2,47 +2,56 @@ const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
-    this.dbName = null;
+    this.db = null;
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || '27017';
     const database = process.env.DB_DATABASE || 'files_manager';
     const url = `mongodb://${host}:${port}/`;
 
-    MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
+    MongoClient.connect(url, { useUnifiedTopology: true }, async (error, client) => {
       if (error) throw error;
-      this.dbName = client.db(database);
+      this.db = client.db(database);
 
       // Check if the database exists, and create it if missing
-      this.dbName.listCollections().toArray((err, collections) => {
-        if (err) throw err;
-        const dbExists = collections.some((collection) => collection.name === 'users' || collection.name === 'files');
+      const collections = await this.db.listCollections().toArray();
+      const collectionNames = collections.map((collection) => collection.name);
 
-        if (!dbExists) {
-          // Create the necessary collections (users and files)
-          this.dbName.createCollection('users');
-          this.dbName.createCollection('files');
-        }
-      });
+      if (!collectionNames.includes('users')) {
+        await this.db.createCollection('users', { capped: false });
+      }
+
+      if (!collectionNames.includes('files')) {
+        await this.db.createCollection('files', { capped: false });
+      }
     });
   }
 
   isAlive() {
-    return !!this.dbName;
+    return !!this.db;
   }
 
   async nbUsers() {
-    const nbusers = await this.dbName.collection('users').countDocuments();
-    return nbusers;
+    if (!this.db) return 0;
+    const nbUsers = await this.db.collection('users').countDocuments();
+    return nbUsers;
   }
 
   async nbFiles() {
-    const nbfiles = await this.dbName.collection('files').countDocuments();
-    return nbfiles;
+    if (!this.db) return 0;
+    const nbFiles = await this.db.collection('files').countDocuments();
+    return nbFiles;
   }
 
   // Define the usersCollection method to return the 'users' collection
   usersCollection() {
-    return this.dbName.collection('users');
+    if (!this.db) return null;
+    return this.db.collection('users');
+  }
+
+  // Define the filesCollection method to return the 'files' collection
+  filesCollection() {
+    if (!this.db) return null;
+    return this.db.collection('files');
   }
 }
 
