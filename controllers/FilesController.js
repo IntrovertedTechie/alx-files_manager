@@ -42,12 +42,11 @@ export default class FilesController {
 
     // If type is not 'folder', save the file locally
     if (type !== 'folder') {
-      // Save the file locally and set the 'localPath' attribute
-      // You'll need to implement this part based on your server's file storage logic
-      // Example: Save the file in '/tmp/files_manager' with a unique filename
-      // Replace this part with your actual file storage logic
-      const localPath = '/tmp/files_manager/' + generateUniqueFilename(); // Implement 'generateUniqueFilename'
-      // Save 'data' to 'localPath'
+      // Implement 'generateUniqueFilename' to generate a unique filename for the file
+      const uniqueFilename = generateUniqueFilename(); // Implement this function
+
+      // Implement logic to save 'data' to a file with the generated 'uniqueFilename'
+      const localPath = '/tmp/files_manager/' + uniqueFilename; // Replace with your file storage logic
 
       // Set the 'localPath' attribute in the newFile document
       newFile.localPath = localPath;
